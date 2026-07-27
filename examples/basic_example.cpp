@@ -19,7 +19,7 @@
 #include "eenv/eenv.hpp"
 
 //
-// A basic example of using eev library.
+// A basic example of using eenv library.
 //
 // Reproduces the Settings example from this spec:
 //

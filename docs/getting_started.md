@@ -1,12 +1,5 @@
 # Getting Started
 
-## Compiler support
-
-`eenv` requires a C++26 compiler supporting static reflection (P2996).  
-At the time of writing, GCC 16 (or later) is the recommended compiler.  
-
-The library is header-only and has no external dependencies.  
-
 ## Integrating eenv
 
 # Getting Started
@@ -46,7 +39,7 @@ The following CMake options control the project configuration.
 
 ## Using eenv in a CMake project
 
-eenv is a header-only library and exposes the CMake target `eenv::eenv`.
+`eenv` is a header-only library and exposes the CMake target `eenv::eenv`.
 
 Add the library to your project using your preferred dependency management strategy (for example `add_subdirectory()`, `FetchContent`, or a package manager), then link your target against `eenv::eenv`.
 

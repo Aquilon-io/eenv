@@ -5,10 +5,10 @@ Unlike compile-time annotations, utility types are part of the declared C++ type
 
 ## Available utility types
 
-| Type | Description |
-| :--- | :---------- |
-| `Secret<T>` | Marks a value as sensitive. The underlying value participates normally in loading and validation but is hidden by formatting and diagnostic utilities. |
-| `Range<T, Min, Max>` | Constrains a value to a compile-time range. Loading fails if the converted value falls outside the specified bounds. |
+| Type                  | Description |
+| :-------------------- | :---------- |
+| `Secret<T>`           | Marks a value as sensitive. The underlying value participates normally in loading and validation but is hidden by formatting and diagnostic utilities. |
+| `Range<T, Min, Max>`  | Constrains a value to a compile-time range. Loading fails if the converted value falls outside the specified bounds. |
 
 ## Secret<T>
 
