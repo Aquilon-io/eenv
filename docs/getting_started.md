@@ -16,7 +16,7 @@ The library is header-only and has no external dependencies.
 After cloning the repository, configure and build the project using one of the provided CMake presets.
 
 ```bash
-git clone https://github.com/<owner>/eenv.git
+git clone https://github.com/Aquilon-io/eenv.git
 cd eenv
 
 cmake --preset=release
