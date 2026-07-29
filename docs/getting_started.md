@@ -59,7 +59,7 @@ target_link_libraries(my_application
 ```cpp
 #include <eenv/eenv.hpp>
 // Define a configuration schema
-// Name your struct Settings or whatever you like
+// Name your struct 'Settings' or whatever you like
 struct Settings {
     std::string host;
     int port;
