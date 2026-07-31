@@ -65,8 +65,8 @@ namespace detail {
 // Example:
 //   "storage_account_key" -> "STORAGE_ACCOUNT_KEY"
 //
-// Used only when compile-time annotations are not enabled. When
-// annotations are available, name resolution is delegated to
+// Used only when compile-time annotations are not enabled. 
+// When annotations are available, name resolution is delegated to
 // eenv::detail::env_name_for().
 inline std::string to_env_name(std::string_view member_name) {
     // ASCII-only uppercase, matching eenv::detail::env_name_for() in
