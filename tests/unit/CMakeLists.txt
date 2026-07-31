@@ -15,9 +15,9 @@
 #
 
 add_executable(${PROJECT_NAME}_unit_tests
-    from_env_test.cpp
     annotations_test.cpp
-    converters_test.cpp
+    converter_bool_test.cpp
+    converter_integral_test.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}_unit_tests
