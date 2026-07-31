@@ -27,11 +27,14 @@
 // Settings struct without teaching env_settings how to parse it fails at
 // build time, not at runtime.
 //
+#include <algorithm>
 #include <charconv>
+#include <concepts>
 #include <filesystem>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <system_error>
 
 #include "eenv/errors.hpp"
 
@@ -60,32 +63,20 @@ template <> struct Converter<std::string> {
     }
 };
 
-template <> struct Converter<int> {
-    static int convert([[maybe_unused]] std::string_view field, std::string_view raw) {
-        int value{};
+template <typename T>
+    requires std::integral<T> && (!std::same_as<T, bool>)
+struct Converter<T> {
+    static T convert([[maybe_unused]] std::string_view field, std::string_view raw) {
+        T value{};
         const auto *begin = raw.data();
         const auto *end = raw.data() + raw.size();
         auto [ptr, ec] = std::from_chars(begin, end, value);
         if (ec != std::errc{} || ptr != end) {
-            throw ConversionError("cannot convert '" + std::string(raw) + "' to int");
+            throw ConversionError("cannot convert '" + std::string(raw) + "' to an integral value");
         }
         return value;
     }
 };
-
-template <> struct Converter<long long> {
-    static long long convert([[maybe_unused]] std::string_view field, std::string_view raw) {
-        long long value{};
-        const auto *begin = raw.data();
-        const auto *end = raw.data() + raw.size();
-        auto [ptr, ec] = std::from_chars(begin, end, value);
-        if (ec != std::errc{} || ptr != end) {
-            throw ConversionError("cannot convert '" + std::string(raw) + "' to long long");
-        }
-        return value;
-    }
-};
-
 template <> struct Converter<double> {
     static double convert([[maybe_unused]] std::string_view field, std::string_view raw) {
         double value{};

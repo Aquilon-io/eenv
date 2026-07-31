@@ -17,7 +17,8 @@
 option(${PROJECT_NAME_UPPER}_BUILD_EXAMPLES "Build ${PROJECT_NAME} examples" ON)
 
 # User-facing option controlling whether unit tests are built.
-option(EENV_BUILD_TESTS "Build unit tests" OFF)
+option(EENV_BUILD_TESTS "Build tests" OFF)
+option(EENV_BUILD_STRESS_TESTS "Build stress tests" OFF)
 
 # Initialize CTest's standard BUILD_TESTING variable before include(CTest).
 set(BUILD_TESTING "${EENV_BUILD_TESTS}" CACHE BOOL "Build tests")

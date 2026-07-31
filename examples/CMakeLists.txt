@@ -17,7 +17,6 @@
 set(EXAMPLES
     basic_example
     annotations_example
-    concurrent_read
 )
 
 foreach(example IN LISTS EXAMPLES)
