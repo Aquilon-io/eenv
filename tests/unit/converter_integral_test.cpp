@@ -21,7 +21,6 @@
 #include <type_traits>
 
 #include "eenv/convert.hpp"
-#include "eenv/errors.hpp"
 
 using namespace eenv;
 

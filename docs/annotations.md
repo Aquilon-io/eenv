@@ -42,6 +42,7 @@ When both are present, field-level annotations take precedence over type-level a
 | :--------- | :---------- |
 | `alias` | Maps a field to a different environment variable name. |
 | `required` | Marks a field as mandatory. Loading fails if the corresponding environment variable is missing. |
+| `optional` | Marks a field as optional. Overrides a struct-level required annotation for the field. |
 | `default_value` | Provides a default value when the environment variable is not defined. |
 | `case_sensitive` | Performs a case-sensitive lookup of the environment variable name. |
 | `case_insensitive` | Performs a case-insensitive lookup of the environment variable name. |  
@@ -118,3 +119,19 @@ The environment variable lookup ignores character case.
 
 ---
 
+### optional
+
+```cpp
+[[= env::required]]
+struct Settings
+{
+    std::string host;
+
+    [[= env::optional]]
+    int port;
+};
+```
+
+Loading fails if `HOST` is not defined. `PORT` may be omitted.
+
+---

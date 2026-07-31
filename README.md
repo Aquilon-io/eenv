@@ -63,7 +63,7 @@ Fields can be annotated to customize how values are loaded and validated.
 - default value
 - case sensitivity
 
-See [Annotations example](examples/annotations_example.cpp) for details and [Compile-time annotations](docs/annotations.md) for a list of the available compile-time annotations.
+[Annotations example](examples/annotations_example.cpp) for details and [Compile-time annotations](docs/annotations.md) for a list of the available compile-time annotations.
 
 ### Utility types
 
@@ -74,7 +74,7 @@ Examples include:
 - `Secret<T>`
 - `Range<T, Min, Max>`
 
-See [Basic example](examples/basic_example.cpp) and [Utility types](docs/utility_types.md) for details.
+[Basic example](examples/basic_example.cpp) and [Utility types](docs/utility_types.md) for details.
 
 ## Validation
 

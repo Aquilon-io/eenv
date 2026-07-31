@@ -54,6 +54,7 @@
 #include "eenv/constraints.hpp"
 #include "eenv/convert.hpp"
 #include "eenv/errors.hpp"
+#include "eenv/optional.hpp"
 #include "eenv/secret.hpp"
 
 namespace eenv {
@@ -99,6 +100,23 @@ template <typename T> T from_env() {
     template for (constexpr auto member : members) {
         constexpr std::string_view field_name = std::meta::identifier_of(member);
 
+    using MemberType = typename[:std::meta::type_of(member):];
+
+#if defined(EENV_HAS_ANNOTATIONS)
+        // A member-level env::required directly on a std::optional<T> field
+        // contradicts the field's own type. As a result, it fails at compile time 
+        // rather than silently pick a winner. A class-level env::required reaching
+        // this same field is fine and is handled below, not here: it's
+        // meant as a general default, and std::optional<T> exempting
+        // itself from it is the intended use of that mechanism, not a bug.
+        static_assert(!(is_optional_v<MemberType> && detail::annotation_of<env::required_t>(member).has_value()),
+                      "env::required directly on a std::optional<T> member is contradictory: "
+                      "std::optional already encodes 'this may be absent' at the type level. "
+                      "Remove env::required from this member (a class-level env::required is "
+                      "fine and is silently ignored for std::optional<T> members), or change "
+                      "the member's type.");
+#endif
+
 #if defined(EENV_HAS_ANNOTATIONS)
         const std::string env_name = detail::env_name_for(member);
         const bool case_sensitive = detail::is_case_sensitive(member, ^^T);
@@ -112,7 +130,7 @@ template <typename T> T from_env() {
 #if defined(EENV_HAS_ANNOTATIONS)
             if (auto dv = detail::annotation_of<env::default_value>(member)) {
                 raw = std::string(dv->value.view());
-            } else if (detail::annotation_of<env::required_t>(member)) {
+            } else if (detail::is_required(member, ^^T) && !is_optional_v<MemberType>) {
                 errors.push_back(
                     FieldError{std::string(field_name), "required environment variable '" + env_name + "' is not set"});
                 continue;
@@ -124,8 +142,6 @@ template <typename T> T from_env() {
 #endif
         }
 
-        using MemberType = typename[:std::meta::type_of(member):];
-
         try {
             if constexpr (is_secret_v<MemberType>) {
                 using Inner = secret_inner_t<MemberType>;
@@ -133,6 +149,9 @@ template <typename T> T from_env() {
             } else if constexpr (is_range_v<MemberType>) {
                 using Inner = range_inner_t<MemberType>;
                 result.[:member:].set(Converter<Inner>::convert(field_name, *raw));
+            } else if constexpr (is_optional_v<MemberType>) {
+                using Inner = optional_inner_t<MemberType>;
+                result.[:member:] = Converter<Inner>::convert(field_name, *raw);
             } else {
                 result.[:member:] = Converter<MemberType>::convert(field_name, *raw);
             }

@@ -15,46 +15,12 @@
 
 #include <gtest/gtest.h>
 
-#include <cstdlib>
-#include <optional>
-#include <string>
-#include <string_view>
+#include "scoped_env.hpp"
 
 #include "eenv/annotations.hpp"
-#include "eenv/errors.hpp"
 #include "eenv/settings.hpp"
 
 namespace {
-
-// ----------------------------------------------------------------
-// RAII fixture : sets an environment variable for the duration
-// of the test and restores the previous state upon destruction.
-// Prevents state leakage between tests.
-// ----------------------------------------------------------------
-class ScopedEnvVar {
-  public:
-    ScopedEnvVar(std::string name, std::string_view value) : name_(std::move(name)) {
-        if (const char *existing = std::getenv(name_.c_str())) {
-            previous_ = existing;
-        }
-        setenv(name_.c_str(), std::string(value).c_str(), /*overwrite=*/1);
-    }
-
-    ~ScopedEnvVar() {
-        if (previous_) {
-            setenv(name_.c_str(), previous_->c_str(), 1);
-        } else {
-            unsetenv(name_.c_str());
-        }
-    }
-
-    ScopedEnvVar(const ScopedEnvVar &) = delete;
-    ScopedEnvVar &operator=(const ScopedEnvVar &) = delete;
-
-  private:
-    std::string name_;
-    std::optional<std::string> previous_;
-};
 
 // clang-format off
 
@@ -71,6 +37,12 @@ struct TwoRequiredFields {
 };
 
 struct [[= env::required]] AllRequiredFields {
+    int port;
+    std::string host;
+};
+
+struct [[= env::required]] AllRequiredFieldsUnlessOptional {
+    [[= env::optional]]
     int port;
     std::string host;
 };
@@ -92,7 +64,7 @@ TEST(AnnotationsRequiredFields, PresentRequiredFieldSucceeds) {
     EXPECT_EQ(settings.port, 8080);
 }
 
-TEST(AnnotationsRequiredFields, AllMissingFieldsAreAggregatedInOneError) {
+TEST(AnnotationsRequiredFields, TwoRequiredFieldsAggregatedInOneError) {
     unsetenv("PORT");
     unsetenv("HOST");
 
@@ -119,3 +91,50 @@ TEST(AnnotationsRequiredFields, OneMissingOnePresentReportsOnlyTheMissingOne) {
         // EXPECT_FALSE(e.has_error_for("port"));
     }
 }
+
+TEST(AnnotationsRequiredFields, AllMissingFieldsAggregatedInOneError) {
+    unsetenv("PORT");
+    unsetenv("HOST");
+
+    try {
+        from_env<AllRequiredFields>();
+        FAIL() << "from_env should have raised a SettingsError";
+    } catch (const SettingsError &e) {
+        EXPECT_EQ(e.errors().size(), 2u);
+        // EXPECT_TRUE(e.has_error_for("port"));
+        // EXPECT_TRUE(e.has_error_for("host"));
+    }
+}
+
+TEST(AnnotationsRequiredFields, AllRequiredFieldsUnlessOptionalAggregatedInOneError) {
+    unsetenv("PORT");
+    unsetenv("HOST");
+
+    try {
+        from_env<AllRequiredFieldsUnlessOptional>();
+        FAIL() << "from_env should have raised a SettingsError";
+    } catch (const SettingsError &e) {
+        EXPECT_EQ(e.errors().size(), 1u);
+        // EXPECT_TRUE(e.has_error_for("port"));
+        // EXPECT_TRUE(e.has_error_for("host"));
+    }
+}
+
+struct BadConfig {
+    [[= env::required]] std::optional<int> port;
+};
+
+
+// The static_assert in settings.hpp should trigger a compile-time error, so this test is commented out.
+// See from_env() in settings.hpp for the note on the static_assert that enforces this rule.
+//
+// TEST(AnnotationsRequiredFields, WillFail) 
+// {
+//     // This test is expected to fail at compile time due to the static_assert in settings
+//     try {
+//         from_env<BadConfig>();
+//         
+//     } catch (const SettingsError &e) {
+//         // ...
+//     }
+// }
