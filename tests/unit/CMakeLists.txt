@@ -22,6 +22,9 @@ add_executable(${PROJECT_NAME}_unit_tests
     converter_path_test.cpp
     converter_floating_point_test.cpp
     converter_double_test.cpp
+    range_integral_test.cpp
+    range_double_test.cpp
+    range_floating_point_test.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}_unit_tests

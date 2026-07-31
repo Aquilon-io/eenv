@@ -18,9 +18,14 @@
 //
 // Range<T, Min, Max> : a closed-interval bound baked into the field's type
 // via non-type template parameters, checked once at assignment time.
-// It only covers integral scalars for now.
+// Supports integral scalars and floating-point scalars (float/double).
+//
+// Floating-point NTTPs (Min, Max as T) are legal since C++20, independent
+// of P2996 reflection, so this compiles under -std=c++20 as well as the
+// -freflection C++26 mode used elsewhere in eenv.
 //
 
+#include <charconv>
 #include <concepts>
 #include <string>
 
@@ -28,8 +33,24 @@
 
 namespace eenv {
 
-template <std::integral T, T Min, T Max> class Range {
+// RangeScalar: integral or floating point, but not bool. std::integral<bool>
+// is true, and a "range" over {false, true} is never a meaningful use of
+// this constraint, so it's excluded explicitly.
+template <typename T>
+concept RangeScalar = (std::integral<T> || std::floating_point<T>) && !std::same_as<T, bool>;
+
+template <RangeScalar T, T Min, T Max> class Range {
+    // For integral T this is the only check needed.
+    // For floating-point T, this also fires if Min or Max is NaN, 
+    // since any comparison against NaN is false
+    // but the message below is clearer about *why* in that case.
     static_assert(Min <= Max, "Range: Min must be <= Max");
+
+    // x == x is false only for NaN; deliberately not std::isnan 
+    // (not guaranteed constexpr-safe across libstdc++/GCC versions  
+    // same class of issue as consteval + C stdlib functions elsewhere in eenv).
+    static_assert(!std::floating_point<T> || (Min == Min), "Range: Min must not be NaN");
+    static_assert(!std::floating_point<T> || (Max == Max), "Range: Max must not be NaN");
 
   public:
     Range() : value_(Min) {}
@@ -39,21 +60,37 @@ template <std::integral T, T Min, T Max> class Range {
     operator T() const noexcept { return value_; }
 
     void set(T value) {
-        if (value < Min || value > Max) {
-            // Runtime-only path (called from from_env at load time),
-            // so plain std::to_string is fine here.
-            // see convert.hpp for the consteval-safe equivalent.
-            throw ConversionError("value " + std::to_string(value) + " out of range [" + std::to_string(Min) + ", " +
-                                  std::to_string(Max) + "]");
+        // Written as "accept if inside, then negate"  
+        // NOT as(value < Min || value > Max). That De Morgan-equivalent form
+        // silently accepts NaN for floating-point T, because NaN < x and
+        // NaN > x are both false. This form rejects NaN correctly, since
+        // (value >= Min) is false whenever value is NaN.
+        if (!(value >= Min && value <= Max)) {
+            throw ConversionError("value " + to_diagnostic_string(value) + " out of range [" +
+                                   to_diagnostic_string(Min) + ", " + to_diagnostic_string(Max) + "]");
         }
         value_ = value;
     }
 
   private:
+    // std::to_string(double) truncates to 6 decimals, which can hide the
+    // actual reason a value was rejected (e.g. Max + 1ulp prints
+    // identically to Max). std::to_chars gives the shortest round-trip
+    // representation instead, which is what you want in a diagnostic.
+    static std::string to_diagnostic_string(T v) {
+        if constexpr (std::floating_point<T>) {
+            char buf[64];
+            auto res = std::to_chars(buf, buf + sizeof(buf), v);
+            return std::string(buf, res.ptr);
+        } else {
+            return std::to_string(v);
+        }
+    }
+
     T value_;
 };
 
-// --- trait helpers used by the reflection-based loader -----------------
+// Trait helpers used by the reflection-based loader 
 
 template <typename U> struct is_range : std::false_type {};
 
