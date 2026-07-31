@@ -24,8 +24,8 @@ project(eenv
 
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16.0)
     message(WARNING
-        "eenv necessite GCC >= 16.1 avec le support "
-        "experimental de la reflexion (P2996). Compilateur detecte: "
+        "eenv requires GCC >= 16.1 with experimental "
+        "reflection support (P2996). Detected compiler: "
         "${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 endif()
 
