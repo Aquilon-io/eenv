@@ -62,6 +62,9 @@ inline constexpr case_insensitive_t case_insensitive{};
 struct required_t {};
 inline constexpr required_t required{};
 
+struct optional_t {};
+inline constexpr optional_t optional{};
+
 // Fixed-capacity string used by annotation payloads.
 //
 // Current reflection implementations cannot reliably extract annotation
@@ -134,6 +137,21 @@ consteval bool is_case_sensitive(std::meta::info member, std::meta::info klass) 
         return true;
     }
 
+    return false;
+}
+
+// Resolves the effective required status of a member.
+// Precedence: member annotation > class annotation > false.
+consteval bool is_required(std::meta::info member, std::meta::info klass) {
+    if (annotation_of<env::optional_t>(member)) {
+        return false;
+    }
+    if (annotation_of<env::required_t>(member)) {
+        return true;
+    }
+    if (annotation_of<env::required_t>(klass)) {
+        return true;
+    }
     return false;
 }
 
@@ -220,7 +238,7 @@ template <class T> consteval auto collect_field_meta() {
             .identifier = std::meta::identifier_of(m),
             .env_name = detail::env_name_for(m),
             .case_sensitive = detail::is_case_sensitive(m, ^^T),
-            .required = detail::annotation_of<env::required_t>(m).has_value(),
+            .required = detail::is_required(m, ^^T),
             .default_value = dv ? std::define_static_string(std::string(dv->value.view())) : nullptr,
         };
     }

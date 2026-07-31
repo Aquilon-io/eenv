@@ -31,7 +31,7 @@ struct Settings {
     std::string host;
 };
 
-struct[[= env::case_sensitive]] StrictSettings {
+struct [[= env::case_sensitive]] StrictSettings {
 
     // Inherits case_sensitive from the class
     std::string token;
