@@ -22,7 +22,7 @@
             "displayName": "Debug",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
-                "BUILD_TESTING": "ON"
+                "EENV_BUILD_TESTS": "ON"
             }
         },
         {
@@ -31,7 +31,7 @@
             "displayName": "Release",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release",
-                "BUILD_TESTING": "OFF"
+                "EENV_BUILD_TESTS": "OFF"
             }
         },
         {
@@ -55,7 +55,7 @@
             "inherits": "release",
             "displayName": "CI (tests on, GTest FetchContent fallback allowed)",
             "cacheVariables": {
-                "BUILD_TESTING": "ON",
+                "EENV_BUILD_TESTS": "ON",
                 "EENV_FETCH_GTEST": "ON",
                 "EENV_WARNINGS_AS_ERRORS": "ON"
             }
