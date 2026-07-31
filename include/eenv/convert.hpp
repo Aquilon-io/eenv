@@ -77,6 +77,7 @@ struct Converter<T> {
         return value;
     }
 };
+
 template <> struct Converter<double> {
     static double convert([[maybe_unused]] std::string_view field, std::string_view raw) {
         double value{};
@@ -85,6 +86,19 @@ template <> struct Converter<double> {
         auto [ptr, ec] = std::from_chars(begin, end, value);
         if (ec != std::errc{} || ptr != end) {
             throw ConversionError("cannot convert '" + std::string(raw) + "' to double");
+        }
+        return value;
+    }
+};
+
+template <> struct Converter<float> {
+    static float convert([[maybe_unused]] std::string_view field, std::string_view raw) {
+        float value{};
+        const auto *begin = raw.data();
+        const auto *end = raw.data() + raw.size();
+        auto [ptr, ec] = std::from_chars(begin, end, value);
+        if (ec != std::errc{} || ptr != end) {
+            throw ConversionError("cannot convert '" + std::string(raw) + "' to float");
         }
         return value;
     }

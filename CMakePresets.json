@@ -47,7 +47,8 @@
             "inherits": "debug",
             "displayName": "Debug + Thread Sanitizers",
             "cacheVariables": {
-                "EENV_ENABLE_THREAD_SANITIZERS": "ON"
+                "EENV_ENABLE_THREAD_SANITIZERS": "ON",
+                "EENV_BUILD_STRESS_TESTS": "ON"
             }
         },
         {
