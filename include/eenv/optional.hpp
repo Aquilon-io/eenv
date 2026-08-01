@@ -33,7 +33,9 @@ template <typename T> struct is_optional<std::optional<T>> : std::true_type {};
 template <typename T> inline constexpr bool is_optional_v = is_optional<T>::value;
 
 template <typename T> struct optional_inner;
-template <typename T> struct optional_inner<std::optional<T>> { using type = T; };
+template <typename T> struct optional_inner<std::optional<T>> {
+    using type = T;
+};
 template <typename T> using optional_inner_t = typename optional_inner<T>::type;
 
 } // namespace eenv

@@ -41,13 +41,13 @@ concept RangeScalar = (std::integral<T> || std::floating_point<T>) && !std::same
 
 template <RangeScalar T, T Min, T Max> class Range {
     // For integral T this is the only check needed.
-    // For floating-point T, this also fires if Min or Max is NaN, 
+    // For floating-point T, this also fires if Min or Max is NaN,
     // since any comparison against NaN is false
     // but the message below is clearer about *why* in that case.
     static_assert(Min <= Max, "Range: Min must be <= Max");
 
-    // x == x is false only for NaN; deliberately not std::isnan 
-    // (not guaranteed constexpr-safe across libstdc++/GCC versions  
+    // x == x is false only for NaN; deliberately not std::isnan
+    // (not guaranteed constexpr-safe across libstdc++/GCC versions
     // same class of issue as consteval + C stdlib functions elsewhere in eenv).
     static_assert(!std::floating_point<T> || (Min == Min), "Range: Min must not be NaN");
     static_assert(!std::floating_point<T> || (Max == Max), "Range: Max must not be NaN");
@@ -60,14 +60,14 @@ template <RangeScalar T, T Min, T Max> class Range {
     operator T() const noexcept { return value_; }
 
     void set(T value) {
-        // Written as "accept if inside, then negate"  
+        // Written as "accept if inside, then negate"
         // NOT as(value < Min || value > Max). That De Morgan-equivalent form
         // silently accepts NaN for floating-point T, because NaN < x and
         // NaN > x are both false. This form rejects NaN correctly, since
         // (value >= Min) is false whenever value is NaN.
         if (!(value >= Min && value <= Max)) {
             throw ConversionError("value " + to_diagnostic_string(value) + " out of range [" +
-                                   to_diagnostic_string(Min) + ", " + to_diagnostic_string(Max) + "]");
+                                  to_diagnostic_string(Min) + ", " + to_diagnostic_string(Max) + "]");
         }
         value_ = value;
     }
@@ -90,7 +90,7 @@ template <RangeScalar T, T Min, T Max> class Range {
     T value_;
 };
 
-// Trait helpers used by the reflection-based loader 
+// Trait helpers used by the reflection-based loader
 
 template <typename U> struct is_range : std::false_type {};
 

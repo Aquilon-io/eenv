@@ -122,22 +122,21 @@ TEST(AnnotationsRequiredFields, AllRequiredFieldsUnlessOptionalAggregatedInOneEr
 
 namespace {
 
-    struct BadConfig {
-        [[= env::required]] std::optional<int> port;
-    };
+struct BadConfig {
+    [[= env::required]] std::optional<int> port;
+};
 
 } // namespace
-
 
 // The static_assert in settings.hpp should trigger a compile-time error, so this test is commented out.
 // See from_env() in settings.hpp for the note on the static_assert that enforces this rule.
 //
-// TEST(AnnotationsRequiredFields, WillFail) 
+// TEST(AnnotationsRequiredFields, WillFail)
 // {
 //     // This test is expected to fail at compile time due to the static_assert in settings
 //     try {
 //         from_env<BadConfig>();
-//         
+//
 //     } catch (const SettingsError &e) {
 //         // ...
 //     }

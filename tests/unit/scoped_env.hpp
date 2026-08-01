@@ -20,7 +20,6 @@
 #include <string>
 #include <string_view>
 
-
 namespace {
 
 // ----------------------------------------------------------------
@@ -29,9 +28,9 @@ namespace {
 // Prevents state leakage between tests.
 // ----------------------------------------------------------------
 class ScopedEnvVar {
-public:
+  public:
     ScopedEnvVar(std::string name, std::string_view value) : name_(std::move(name)) {
-        if (const char* existing = std::getenv(name_.c_str())) {
+        if (const char *existing = std::getenv(name_.c_str())) {
             previous_ = existing;
         }
         setenv(name_.c_str(), std::string(value).c_str(), /*overwrite=*/1);
@@ -45,10 +44,10 @@ public:
         }
     }
 
-    ScopedEnvVar(const ScopedEnvVar&) = delete;
-    ScopedEnvVar& operator=(const ScopedEnvVar&) = delete;
+    ScopedEnvVar(const ScopedEnvVar &) = delete;
+    ScopedEnvVar &operator=(const ScopedEnvVar &) = delete;
 
-private:
+  private:
     std::string name_;
     std::optional<std::string> previous_;
 };

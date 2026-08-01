@@ -16,9 +16,9 @@
 
 #include <gtest/gtest.h>
 
-#include <limits>
 #include <bit>
 #include <cmath>
+#include <limits>
 
 #include "eenv/constraints.hpp"
 
@@ -33,13 +33,9 @@ TEST(RangeFloat, BoundariesAccepted) {
 }
 
 TEST(RangeFloat, OneUlpOutsideRejected) {
-EXPECT_THROW(
-    FloatRange_1(std::nextafterf(0.1f, -std::numeric_limits<float>::infinity())),
-    eenv::ConversionError);
+    EXPECT_THROW(FloatRange_1(std::nextafterf(0.1f, -std::numeric_limits<float>::infinity())), eenv::ConversionError);
 
-EXPECT_THROW(
-    FloatRange_1(std::nextafterf(0.2f, std::numeric_limits<float>::infinity())),
-    eenv::ConversionError);
+    EXPECT_THROW(FloatRange_1(std::nextafterf(0.2f, std::numeric_limits<float>::infinity())), eenv::ConversionError);
 }
 
 TEST(RangeFloat, NaNRejected) {

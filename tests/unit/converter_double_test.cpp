@@ -42,7 +42,7 @@ INSTANTIATE_TEST_SUITE_P(AcceptedValues, DoubleConverterValidInputs,
                                            DoubleConversionCase{std::string("50000.0"), 50000.0},
                                            DoubleConversionCase{std::string("0.4"), 0.4},
                                            DoubleConversionCase{std::string("-12.0"), -12.0},
-                                           DoubleConversionCase{std::string("0.0099999991"), 0.0099999991} ));
+                                           DoubleConversionCase{std::string("0.0099999991"), 0.0099999991}));
 
 class DoubleConverterInvalidInputs : public ::testing::TestWithParam<std::string> {};
 
@@ -51,6 +51,5 @@ TEST_P(DoubleConverterInvalidInputs, RejectsValue) {
 }
 
 INSTANTIATE_TEST_SUITE_P(RejectedVariants, DoubleConverterInvalidInputs,
-                         ::testing::Values(std::string(""), std::string("abc"), std::string("-1b"), std::string("true ")
-                                        ));
-
+                         ::testing::Values(std::string(""), std::string("abc"), std::string("-1b"),
+                                           std::string("true ")));

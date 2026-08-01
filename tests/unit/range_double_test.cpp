@@ -16,9 +16,9 @@
 
 #include <gtest/gtest.h>
 
-#include <limits>
 #include <bit>
 #include <cmath>
+#include <limits>
 
 #include "eenv/constraints.hpp"
 
@@ -26,7 +26,6 @@ using eenv::Range;
 
 using DoubleRange_1 = eenv::Range<double, 0.0, 10.0>;
 using DoubleRange_2 = eenv::Range<double, -1.0, 1.0>;
-
 
 TEST(RangeDouble, BoundariesAccepted) {
     EXPECT_NO_THROW(DoubleRange_1(0.0));
@@ -45,9 +44,7 @@ TEST(RangeDouble, NaNRejected) {
     EXPECT_THROW(DoubleRange_1(std::numeric_limits<double>::quiet_NaN()), eenv::ConversionError);
 }
 
-TEST(RangeDouble, NegativeZeroAcceptedAsZero) {
-    EXPECT_NO_THROW(DoubleRange_1(-0.0));
-}
+TEST(RangeDouble, NegativeZeroAcceptedAsZero) { EXPECT_NO_THROW(DoubleRange_1(-0.0)); }
 
 using DoubleRange_Unbounded = eenv::Range<double, 0.0, std::numeric_limits<double>::infinity()>;
 
