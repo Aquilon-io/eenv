@@ -19,7 +19,6 @@
 
 using namespace eenv;
 
-
 // TEST(RangeBounds, ExactBoundariesAccepted) {
 //     EXPECT_TRUE(in_range<Range<double, 0.1, 0.2>>(0.1));
 //     EXPECT_TRUE(in_range<Range<double, 0.1, 0.2>>(0.2));
@@ -46,4 +45,3 @@ using namespace eenv;
 //     EXPECT_EQ(std::bit_cast<std::uint64_t>(parsed),
 //               std::bit_cast<std::uint64_t>(0.1));
 // }
-

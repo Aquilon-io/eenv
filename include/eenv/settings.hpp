@@ -100,11 +100,11 @@ template <typename T> T from_env() {
     template for (constexpr auto member : members) {
         constexpr std::string_view field_name = std::meta::identifier_of(member);
 
-    using MemberType = typename[:std::meta::type_of(member):];
+        using MemberType = typename[:std::meta::type_of(member):];
 
 #if defined(EENV_HAS_ANNOTATIONS)
         // A member-level env::required directly on a std::optional<T> field
-        // contradicts the field's own type. As a result, it fails at compile time 
+        // contradicts the field's own type. As a result, it fails at compile time
         // rather than silently pick a winner. A class-level env::required reaching
         // this same field is fine and is handled below, not here: it's
         // meant as a general default, and std::optional<T> exempting

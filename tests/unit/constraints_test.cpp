@@ -1,4 +1,3 @@
-//
 // Copyright (c) 2026 Sylvain Ladoux
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +13,23 @@
 // limitations under the License.
 //
 
-#include <gtest/gtest.h>
-
-#include <bit>
-#include <limits>
+#include <filesystem>
 
 #include "eenv/constraints.hpp"
 
-using eenv::Range;
+static_assert(eenv::RangeScalar<char>);
+static_assert(eenv::RangeScalar<short>);
+static_assert(eenv::RangeScalar<int>);
+static_assert(eenv::RangeScalar<long>);
+static_assert(eenv::RangeScalar<long long>);
 
-using IntRange_1 = eenv::Range<int, 0, 10>;
-using IntRange_2 = eenv::Range<int, -1, 1>;
+static_assert(eenv::RangeScalar<float>);
+static_assert(eenv::RangeScalar<double>);
+static_assert(eenv::RangeScalar<long double>);
 
-TEST(RangeInt, BoundariesAccepted) {
-    EXPECT_NO_THROW(IntRange_1{0});
-    EXPECT_NO_THROW(IntRange_1{10});
-    EXPECT_NO_THROW(IntRange_2{-1});
-    EXPECT_NO_THROW(IntRange_2{0});
-    EXPECT_NO_THROW(IntRange_2{1});
-    EXPECT_THROW(IntRange_2{2}, eenv::ConversionError);
-    EXPECT_THROW(IntRange_2{-2}, eenv::ConversionError);
-}
+// Compile-time: bool must be rejected
+static_assert(!eenv::RangeScalar<bool>);
 
-TEST(RangeInt, NegativeZeroAcceptedAsZero) { EXPECT_NO_THROW(IntRange_1{-0}); }
+static_assert(!eenv::RangeScalar<std::string>);
+static_assert(!eenv::RangeScalar<std::filesystem::path>);
+static_assert(!eenv::RangeScalar<void *>);

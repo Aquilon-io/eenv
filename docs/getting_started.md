@@ -34,6 +34,7 @@ The following CMake options control the project configuration.
 | :----- | :-----: | :---------- |
 | `EENV_BUILD_EXAMPLES` | `ON` | Build the example programs. |
 | `EENV_BUILD_TESTS` | `OFF` | Build the unit tests. |
+| `EENV_BUILD_STRESS_TESTS` | `OFF` | Build the stress tests. |
 | `EENV_FETCH_GTEST` | `OFF` | Download GoogleTest with `FetchContent` if it is not found locally. |
 | `EENV_WARNINGS_AS_ERRORS` | `ON` | Treat compiler warnings as errors. |
 

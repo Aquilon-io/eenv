@@ -27,23 +27,18 @@ namespace {
 
 class PathConverterConformance : public ::testing::TestWithParam<std::string> {};
 
-}  // namespace
+} // namespace
 
 TEST_P(PathConverterConformance, MatchesDirectPathConstruction) {
-    const std::string& raw = GetParam();
+    const std::string &raw = GetParam();
     const std::filesystem::path expected(raw);
     EXPECT_EQ(Converter<std::filesystem::path>::convert("field", raw), expected);
 }
 
-INSTANTIATE_TEST_SUITE_P(
-    RepresentativePaths,
-    PathConverterConformance,
-    ::testing::Values(
-        std::string("/etc/hosts"),
-        std::string("relative/config.yaml"),
-        std::string("./config.yaml"),
-        std::string("../shared/config.yaml"),
-        std::string("path with spaces/file.yaml"),
-        std::string("/home/team/project/data.bin"),
-        std::string()  //
-    ));
+INSTANTIATE_TEST_SUITE_P(RepresentativePaths, PathConverterConformance,
+                         ::testing::Values(std::string("/etc/hosts"), std::string("relative/config.yaml"),
+                                           std::string("./config.yaml"), std::string("../shared/config.yaml"),
+                                           std::string("path with spaces/file.yaml"),
+                                           std::string("/home/team/project/data.bin"),
+                                           std::string() //
+                                           ));

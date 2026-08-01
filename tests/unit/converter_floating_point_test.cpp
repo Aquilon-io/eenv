@@ -33,16 +33,14 @@ TEST_P(FloatConverterValidInputs, ParsesExpectedValue) {
     EXPECT_EQ(Converter<float>::convert("field", raw), expected);
 }
 
-INSTANTIATE_TEST_SUITE_P(AcceptedValues, FloatConverterValidInputs,
-                         ::testing::Values(FloatConversionCase{std::string("0.0"), 0.0f},
-                                           FloatConversionCase{std::string("1.0"), 1.0f},
-                                           FloatConversionCase{std::string("42"), 42.0f},
-                                           FloatConversionCase{std::string("-1.0"), -1.0f},
-                                           FloatConversionCase{std::string("0.0004"), 0.0004f},
-                                           FloatConversionCase{std::string("50000.0"), 50000.0f},
-                                           FloatConversionCase{std::string("0.4"), 0.4f},
-                                           FloatConversionCase{std::string("-12.0"), -12.0f},
-                                           FloatConversionCase{std::string("0.001"), 0.001f} ));
+INSTANTIATE_TEST_SUITE_P(
+    AcceptedValues, FloatConverterValidInputs,
+    ::testing::Values(FloatConversionCase{std::string("0.0"), 0.0f}, FloatConversionCase{std::string("1.0"), 1.0f},
+                      FloatConversionCase{std::string("42"), 42.0f}, FloatConversionCase{std::string("-1.0"), -1.0f},
+                      FloatConversionCase{std::string("0.0004"), 0.0004f},
+                      FloatConversionCase{std::string("50000.0"), 50000.0f},
+                      FloatConversionCase{std::string("0.4"), 0.4f}, FloatConversionCase{std::string("-12.0"), -12.0f},
+                      FloatConversionCase{std::string("0.001"), 0.001f}));
 
 class FloatConverterInvalidInputs : public ::testing::TestWithParam<std::string> {};
 
@@ -51,6 +49,5 @@ TEST_P(FloatConverterInvalidInputs, RejectsValue) {
 }
 
 INSTANTIATE_TEST_SUITE_P(RejectedVariants, FloatConverterInvalidInputs,
-                         ::testing::Values(std::string(""), std::string("abc"), std::string("-1b"), std::string("true ")
-                                        ));
-
+                         ::testing::Values(std::string(""), std::string("abc"), std::string("-1b"),
+                                           std::string("true ")));
